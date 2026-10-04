@@ -35,7 +35,7 @@ body{
   margin:0;background:var(--bg);color:var(--text);
   font-family:"Noto Sans TC",-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif;
   font-size:16px;line-height:1.7;letter-spacing:.02em;
-  padding-bottom:calc(104px + var(--safe-b));overflow-x:hidden;
+  padding-bottom:calc(76px + var(--safe-b));overflow-x:hidden;
 }
 .view,.wrap,.timeline,.node,.spot,.ticket{min-width:0;max-width:100%}
 a{color:inherit}
@@ -68,18 +68,17 @@ button{font:inherit;color:inherit}
 
 /* ---------- 底部 Tab ---------- */
 .tabbar{
-  position:fixed;z-index:50;left:50%;transform:translateX(-50%);
-  bottom:calc(12px + var(--safe-b));width:min(420px,calc(100% - 24px));
-  display:flex;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border-radius:28px;box-shadow:0 8px 28px rgba(80,60,30,.16);padding:6px
+  position:fixed;z-index:50;left:0;right:0;bottom:0;
+  display:flex;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);padding:6px 8px calc(6px + var(--safe-b))
 }
 .tabbar button{
-  flex:1;border:0;background:none;border-radius:22px;padding:7px 0 5px;cursor:pointer;
+  flex:1;max-width:140px;margin:0 auto;border:0;background:none;border-radius:14px;padding:7px 0 5px;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--muted);
   font-size:11.5px;font-weight:700;white-space:nowrap;transition:background .2s,color .2s
 }
 .tabbar svg{width:24px;height:24px}
-.tabbar button.on{background:var(--orange-soft);color:var(--orange)}
+.tabbar button.on{color:var(--orange)}
 .tabbar button:active{transform:scale(.95)}
 
 /* ---------- 日期選單 ---------- */
@@ -231,8 +230,13 @@ button{font:inherit;color:inherit}
 
 /* ---------- 工具頁 ---------- */
 .tool{background:#fff;border-radius:22px;padding:16px;margin:12px 0;box-shadow:0 2px 12px rgba(110,85,50,.06)}
-.tool h3{margin:0 0 10px;font-size:18px;font-weight:900;display:flex;align-items:center;gap:8px}
-.tool h3 small{margin-left:auto;font-size:12px;font-weight:500;color:var(--muted)}
+.tool h3{margin:0;font-size:18px;font-weight:900;display:flex;align-items:center;gap:8px}
+.tool summary{list-style:none;cursor:pointer}
+.tool summary::-webkit-details-marker{display:none}
+.tool .tchev{width:18px;height:18px;color:var(--muted);transition:transform .2s;margin-left:6px}
+.tool[open] .tchev{transform:rotate(180deg)}
+.tool .tbody{margin-top:12px}
+.tool h3 small{margin-left:auto;font-weight:500;font-size:12px;font-weight:500;color:var(--muted)}
 .tool h3 svg{width:22px;height:22px;color:var(--orange)}
 .fx-row{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:16px;padding:10px 14px}
 .fx-row .cur{font-weight:900;font-size:15px;min-width:42px;color:var(--muted)}
@@ -255,6 +259,8 @@ button{font:inherit;color:inherit}
 .gift-form{display:flex;gap:6px;flex-wrap:wrap}
 .gift-form input{flex:1 1 120px;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:9px 12px;font:inherit;font-size:15px;outline:none}
 .gift-form input:focus{border-color:var(--orange)}
+.gift-form input:first-child{flex-basis:100%}
+.gift-form input+input{flex:1 1 0}
 .gift-form button{border:0;background:var(--orange);color:#fff;border-radius:12px;padding:9px 16px;font-weight:700;cursor:pointer}
 .gifts{margin-top:8px}
 .gift{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px dashed var(--line)}
@@ -304,7 +310,7 @@ button{font:inherit;color:inherit}
 <section class="view" id="view-weather">
   <div class="wrap">
     <h2 class="page-title">天氣</h2>
-    <p class="page-sub">每天去的地方天氣不一樣，照著穿就對了</p>
+    <p class="page-sub">每天去的地方天氣不一樣</p>
     <div id="wxlist"></div>
     <div class="auto">每日自動更新</div>
   </div>
@@ -315,35 +321,54 @@ button{font:inherit;color:inherit}
   <div class="wrap">
     <h2 class="page-title">工具</h2>
 
-    <div class="tool" id="fx">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 7.5 12 12l3.5-4.5M12 12v5M9 12.5h6M9 15h6"/></svg>日幣換算</h3>
+    <details class="tool" id="fx" open>
+      <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 7.5 12 12l3.5-4.5M12 12v5M9 12.5h6M9 15h6"/></svg>日幣換算<span style="margin-left:auto"></span><svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
+      <div class="tbody">
       <div class="fx-row"><span class="cur" id="fxFromCur">日圓</span><input id="fxIn" type="number" inputmode="decimal" placeholder="0" aria-label="輸入金額"></div>
       <div class="fx-swap"><button id="fxSwap" aria-label="交換幣別"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 16l4 4 4-4M17 20V4M13 8l4-4 4 4"/></svg></button></div>
       <div class="fx-row"><span class="cur" id="fxToCur">台幣</span><div class="fx-out" id="fxOut">0</div></div>
       <div class="quick" id="fxQuick"></div>
       <div class="fx-rate" id="fxRate"></div>
-    </div>
+      </div>
+    </details>
 
-    <div class="tool">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 7V5a3 3 0 0 1 6 0v2M4 12h16"/></svg>行前準備<small id="packCount"></small></h3>
+    <details class="tool" open>
+      <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 7V5a3 3 0 0 1 6 0v2M4 12h16"/></svg>行前準備<small id="packCount"></small><svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
+      <div class="tbody">
       <div class="progress"><i id="packBar"></i></div>
       <div class="check" id="pack"></div>
-    </div>
+      </div>
+    </details>
 
-    <div class="tool">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 13h18M12 8S9.5 3 7 4.5 9 8 12 8zm0 0s2.5-5 5-3.5S15 8 12 8z"/></svg>伴手禮筆記</h3>
+    <details class="tool" open>
+      <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 13h18M12 8S9.5 3 7 4.5 9 8 12 8zm0 0s2.5-5 5-3.5S15 8 12 8z"/></svg>伴手禮筆記<small id="giftCount"></small><svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
+      <div class="tbody">
       <form class="gift-form" id="giftForm">
         <input id="giftName" placeholder="要買什麼？" required>
         <input id="giftWho" placeholder="送給誰（可不填）">
         <button>加入</button>
       </form>
-      <div class="gifts" id="gifts"></div>
-      <div class="local">筆記只存在這支手機上。</div>
-    </div>
+      <div class="gifts" id="giftList"></div>
+      <div class="local">只存在這支手機上。</div>
+      </div>
+    </details>
+
+    <details class="tool" open>
+      <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11h10.2L20 8H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg>個人購物清單<small id="shopCount"></small><svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
+      <div class="tbody">
+      <form class="gift-form" id="shopForm">
+        <input id="shopName" placeholder="想買的東西" required>
+        <input id="shopWho" placeholder="在哪買／備註（可不填）">
+        <button>加入</button>
+      </form>
+      <div class="gifts" id="shopList"></div>
+      <div class="local">只存在這支手機上。</div>
+      </div>
+    </details>
   </div>
 </section>
 
-<footer class="foot">一路順風・2026 秋天</footer>
+<footer class="foot">Sunny &amp; Lilo 帶爹娘出去玩！</footer>
 
 <!-- ====== 底部 Tab ====== -->
 <nav class="tabbar" aria-label="主選單">
@@ -375,9 +400,11 @@ const FLIGHTS = {
 
 const HOTELS = {
   jal: { name:"Hotel JAL City 札幌中島公園", nights:"10/12–10/14・2 晚", station:"地鐵南北線「中島公園站」",
-         intro:"兩間相連的雙床房，飯店有溫泉大浴場，玩一天回來可以泡個澡。", map:"Hotel JAL City Sapporo Nakajima Park" },
+         intro:"兩間相連的雙床房，飯店有溫泉大浴場，玩一天回來可以泡個澡。", map:"Hotel JAL City Sapporo Nakajima Park",
+         photo:"https://cf.bstatic.com/xdata/images/hotel/max1024x768/764807537.jpg?k=c80080b2398c6cedef74c44134dce0c3a55aae4beb13fd7d32f357c032945b21&o=" },
   grandir: { name:"Grandir Sapporo 北十三條民宿", nights:"10/14–10/16・2 晚", station:"地鐵東豐線「北13條東站」",
-         intro:"沒有櫃台人員，到了在門口平板輸入入住碼就能進去。15:00 後入住、10:00 前退房。", map:"Grandir Sapporo" },
+         intro:"沒有櫃台人員，到了在門口平板輸入入住碼就能進去。15:00 後入住、10:00 前退房。", map:"Grandir Sapporo",
+         photo:"https://a0.muscache.com/im/pictures/hosting/Hosting-1533774421469881011/original/904ef459-fdd6-40e2-8305-043e698113d7.jpeg?im_w=720" },
   richmond: { name:"里士滿酒店 札幌大通", nights:"10/16–10/17・1 晚", station:"地鐵「大通站」走路 5 分",
          intro:"就在狸小路旁邊，晚上散步買伴手禮最方便。", map:"Richmond Hotel Sapporo Odori", pending:true }
 };
@@ -587,6 +614,7 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const mapUrl = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
 const nearUrl = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("restaurants near " + q);
+const hotelThumb = h => h.photo ? '<div class="thumb"><img loading="lazy" src="'+esc(h.photo)+'" alt="'+esc(h.name)+'"></div>' : '<div class="thumb icon">'+ICON.house+'</div>';
 const pend = p => p ? '<span class="tag">'+(typeof p === "string" ? p : "待確認")+'</span>' : "";
 const store = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
@@ -675,7 +703,7 @@ function renderItem(it){
         '</div></article></div>';
     case "hotel": {
       const h = HOTELS[it.hotel];
-      return '<div class="node hotel"><article class="spot"><div class="thumb icon">'+ICON.house+'</div>' +
+      return '<div class="node hotel"><article class="spot">'+hotelThumb(h)+'' +
         '<div class="info"><div class="time">'+esc(it.time||"")+'　'+esc(it.action)+'</div>' +
         '<div class="top"><h3>'+esc(h.name)+pend(h.pending)+'</h3>'+mapBtn(h.map)+'</div></div></article></div>';
     }
@@ -707,7 +735,7 @@ function renderOverview(){
     '</section>' +
     '<section class="section"><h2>機票</h2>' + ticket(FLIGHTS.go) + ticket(FLIGHTS.back) + '</section>' +
     '<section class="section"><h2>住宿</h2>' +
-      Object.values(HOTELS).map(h=>'<article class="spot"><div class="thumb icon">'+ICON.house+'</div><div class="info">' +
+      Object.values(HOTELS).map(h=>'<article class="spot">'+hotelThumb(h)+'<div class="info">' +
         '<div class="time">'+esc(h.nights)+'</div><div class="top"><h3>'+esc(h.name)+pend(h.pending)+'</h3>'+mapBtn(h.map)+'</div>' +
         '<p>'+esc(h.intro)+'</p><div class="tip">'+esc(h.station)+'</div></div></article>').join("") +
     '</section>';
@@ -789,27 +817,31 @@ function renderPack(){
   update();
 }
 
-/* ---------- 工具頁：伴手禮 ---------- */
-function renderGifts(){
-  const list = store.get("hk-gifts", []);
-  $("#gifts").innerHTML = list.length ? list.map((g,i)=>'<div class="gift'+(g.done?" done":"")+'">' +
-      '<input type="checkbox" data-i="'+i+'"'+(g.done?" checked":"")+' aria-label="已買">' +
-      '<div class="g"><b>'+esc(g.name)+'</b>'+(g.who?'<small>給 '+esc(g.who)+'</small>':"")+'</div>' +
-      '<button class="del" data-del="'+i+'" aria-label="刪除">×</button></div>').join("")
-    : '<div class="empty">還沒有記錄，看到想買的就記下來吧！</div>';
-  $("#gifts").querySelectorAll("input").forEach(el=>el.onchange=()=>{
-    const l = store.get("hk-gifts", []); l[el.dataset.i].done = el.checked; store.set("hk-gifts", l); renderGifts();
-  });
-  $("#gifts").querySelectorAll("[data-del]").forEach(el=>el.onclick=()=>{
-    const l = store.get("hk-gifts", []); l.splice(+el.dataset.del, 1); store.set("hk-gifts", l); renderGifts();
-  });
+/* ---------- 工具頁：伴手禮、購物清單 ---------- */
+function setupList(id, key, emptyText, subPrefix){
+  const render = () => {
+    const list = store.get(key, []), box = $("#"+id+"List");
+    $("#"+id+"Count").textContent = list.length ? list.filter(g=>g.done).length + " / " + list.length : "";
+    box.innerHTML = list.length ? list.map((g,i)=>'<div class="gift'+(g.done?" done":"")+'">' +
+        '<input type="checkbox" data-i="'+i+'"'+(g.done?" checked":"")+' aria-label="已買">' +
+        '<div class="g"><b>'+esc(g.name)+'</b>'+(g.who?'<small>'+subPrefix+esc(g.who)+'</small>':"")+'</div>' +
+        '<button class="del" data-del="'+i+'" aria-label="刪除">×</button></div>').join("")
+      : '<div class="empty">'+emptyText+'</div>';
+    box.querySelectorAll("input").forEach(el=>el.onchange=()=>{
+      const l = store.get(key, []); l[el.dataset.i].done = el.checked; store.set(key, l); render();
+    });
+    box.querySelectorAll("[data-del]").forEach(el=>el.onclick=()=>{
+      const l = store.get(key, []); l.splice(+el.dataset.del, 1); store.set(key, l); render();
+    });
+  };
+  $("#"+id+"Form").onsubmit = e => {
+    e.preventDefault();
+    const name = $("#"+id+"Name").value.trim(); if (!name) return;
+    const l = store.get(key, []); l.push({ name, who:$("#"+id+"Who").value.trim(), done:false });
+    store.set(key, l); $("#"+id+"Name").value = ""; $("#"+id+"Who").value = ""; render();
+  };
+  render();
 }
-$("#giftForm").onsubmit = e => {
-  e.preventDefault();
-  const name = $("#giftName").value.trim(); if (!name) return;
-  const l = store.get("hk-gifts", []); l.push({ name, who:$("#giftWho").value.trim(), done:false });
-  store.set("hk-gifts", l); $("#giftName").value = ""; $("#giftWho").value = ""; renderGifts();
-};
 
 /* ---------- 底部 Tab 切換 ---------- */
 const tabs = document.querySelectorAll(".tabbar button");
@@ -827,7 +859,9 @@ function switchTab(name, focusDay){
 tabs.forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 
 /* ---------- 啟動 ---------- */
-fxRender(); renderPack(); renderGifts();
+fxRender(); renderPack();
+setupList("gift", "hk-gifts", "還沒有記錄，看到想買的就記下來吧！", "給 ");
+setupList("shop", "hk-shop", "把自己想買的東西記在這裡", "");
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 const ti = DAYS.findIndex(d=>d.date===today);
 showDay(ti >= 0 ? ti : 0);
