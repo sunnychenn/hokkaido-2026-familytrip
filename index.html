@@ -352,14 +352,6 @@ button{font:inherit;color:inherit}
     </details>
 
     <details class="tool" open>
-      <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 7V5a3 3 0 0 1 6 0v2M4 12h16"/></svg>行前準備<small id="packCount"></small><svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
-      <div class="tbody">
-      <div class="progress"><i id="packBar"></i></div>
-      <div class="check" id="pack"></div>
-      </div>
-    </details>
-
-    <details class="tool" open>
       <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 13h18M12 8S9.5 3 7 4.5 9 8 12 8zm0 0s2.5-5 5-3.5S15 8 12 8z"/></svg>伴手禮筆記<small id="giftCount"></small><svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
       <div class="tbody">
       <form class="gift-form" id="giftForm">
@@ -382,6 +374,14 @@ button{font:inherit;color:inherit}
       </form>
       <div class="gifts" id="shopList"></div>
       <div class="local">只存在這支手機上。</div>
+      </div>
+    </details>
+
+    <details class="tool" open>
+      <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 7V5a3 3 0 0 1 6 0v2M4 12h16"/></svg>行前準備<small id="packCount"></small><svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
+      <div class="tbody">
+      <div class="progress"><i id="packBar"></i></div>
+      <div class="check" id="pack"></div>
       </div>
     </details>
   </div>
@@ -426,8 +426,9 @@ const HOTELS = {
   grandir: { name:"Grandir Sapporo 北十三條民宿", nights:"10/14–10/16・2 晚", station:"地鐵東豐線「北13條東站」",
          intro:"沒有櫃台人員，到了在門口平板輸入入住碼就能進去。15:00 後入住、10:00 前退房。", map:"Grandir Sapporo",
          photo:"https://a0.muscache.com/im/pictures/hosting/Hosting-1533774421469881011/original/904ef459-fdd6-40e2-8305-043e698113d7.jpeg?im_w=720" },
-  richmond: { name:"里士滿酒店 札幌大通", nights:"10/16–10/17・1 晚", station:"地鐵「大通站」走路 5 分",
-         intro:"就在狸小路旁邊，晚上散步買伴手禮最方便。", map:"Richmond Hotel Sapporo Odori", pending:true }
+  tokyu: { name:"東急STAY 札幌大通", nights:"10/16–10/17・1 晚", station:"地鐵「大通站」2 號出口走路 3 分",
+         intro:"房間裡有洗衣烘衣機和微波爐，走到狸小路只要幾分鐘。15:00 後入住、11:00 前退房。", map:"東急ステイ札幌大通",
+         photo:"img-tokyu.jpg" }
 };
 
 /* ---------- 地圖上的地點 ----------
@@ -435,21 +436,24 @@ const HOTELS = {
    pos：名字放在圖釘的 r 右邊／l 左邊／t 上面／b 下面
    每一天的地圖畫哪些點，看下面 DAYS 裡的 route */
 const PLACES = {
-  sapporo:  { name:"札幌市區",       lat:43.060, lon:141.354, pos:"r", stay:true },
-  airport:  { name:"新千歲機場",     lat:42.775, lon:141.692, pos:"b" },
-  jozankei: { name:"豐平峽・定山溪", lat:42.940, lon:141.160, pos:"r" },
-  toya:     { name:"洞爺湖・昭和新山", lat:42.560, lon:140.840, pos:"r" },
-  kyogoku:  { name:"羊蹄山名水公園", lat:42.855, lon:140.885, pos:"r" },
-  daibutsu: { name:"頭大佛",         lat:42.928, lon:141.375, pos:"r" },
-  otaru:    { name:"小樽",           lat:43.188, lon:140.992, pos:"l" },
-  koibito:  { name:"白色戀人公園",   lat:43.089, lon:141.272, pos:"l" }
+  sapporo:   { name:"札幌市區",       lat:43.060, lon:141.354, pos:"r", stay:true },
+  airport:   { name:"新千歲機場",     lat:42.775, lon:141.692, pos:"b" },
+  jozankei:  { name:"豐平峽・定山溪", lat:42.940, lon:141.160, pos:"l" },
+  takino:    { name:"瀧野鈴蘭公園",   lat:42.905, lon:141.385, pos:"r" },
+  shikotsu:  { name:"支笏湖",         lat:42.775, lon:141.400, pos:"r" },
+  otaru:     { name:"小樽",           lat:43.188, lon:140.992, pos:"l" },
+  asahiyama: { name:"旭山動物園",     lat:43.768, lon:142.480, pos:"r" },
+  biei:      { name:"美瑛拼布之路",   lat:43.600, lon:142.440, pos:"l" },
+  aoiike:    { name:"青池・白鬚瀑布", lat:43.490, lon:142.620, pos:"r" },
+  koibito:   { name:"白色戀人公園",   lat:43.089, lon:141.272, pos:"l" },
+  jingu:     { name:"北海道神宮",     lat:43.054, lon:141.308, pos:"b" }
 };
 /* 行程總覽的大地圖：要標哪些點、旁邊寫什麼 */
 const OVERVIEW_MAP = [
-  { place:"sapporo", name:"札幌", note:"住這裡", pos:"r" },
-  { place:"otaru",   name:"小樽", note:"10/15", pos:"l" },
-  { place:"toya",    name:"洞爺湖", note:"10/13", pos:"l" },
-  { place:"airport", name:"新千歲機場", note:"", pos:"b" }
+  { place:"sapporo",   name:"札幌", note:"住這裡", pos:"r" },
+  { place:"otaru",     name:"小樽", note:"10/14", pos:"l" },
+  { place:"shikotsu",  name:"支笏湖", note:"10/13", pos:"l" },
+  { place:"asahiyama", name:"旭川・美瑛", note:"10/15", pos:"r" }
 ];
 
 const DAYS = [
@@ -471,76 +475,52 @@ const DAYS = [
       { type:"spot", time:"飯後散步", name:"中島公園",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Nakajima_Park_Sapporo03bs5s4272.jpg/500px-Nakajima_Park_Sapporo03bs5s4272.jpg",
         intro:"飯店旁的大公園，有池塘、小橋和老洋館。十月樹葉開始轉色，早上散步也很舒服。",
-        map:"中島公園 札幌" }
+        map:"中島公園 札幌" },
+      { type:"hotel", time:"晚上", hotel:"jal", action:"回飯店泡溫泉 ♨" }
     ]
   },
   {
-    date:"2026-10-13", route:["sapporo","jozankei","toya","kyogoku","sapporo"], short:"10/13", week:"二",
-    title:"豐平峽・<em>洞爺湖</em>一日遊", pendingTitle:"行程待討論", hotel:"jal",
-    weather:{ name:"洞爺湖", lat:42.56, lon:140.82 },
+    date:"2026-10-13", route:["sapporo","jozankei","takino","shikotsu","sapporo"], short:"10/13", week:"二",
+    title:"豐平峽・<em>支笏湖</em>一日遊", hotel:"jal",
+    weather:{ name:"定山溪・支笏湖", lat:42.87, lon:141.27 },
     items:[
-      { type:"note", text:"跟中文導遊的一日遊團出發，坐遊覽車不用自己轉車。午餐在洞爺湖自己吃，約 18:00 回到大通。" },
-      { type:"move", time:"7:40", to:"往集合點", options:[
-        { title:"地鐵南北線", rec:true, detail:"中島公園站往麻生方向坐 2 站到「大通站」，走到「31 號出口」。08:00 集合、08:10 準時發車，提早 10 分鐘到。" } ] },
-      { type:"spot", time:"09:00", name:"豐平峽水壩",
+      { type:"note", text:"跟一日遊團出發（有中文導遊），坐遊覽車不用自己轉車。午餐在定山溪自己吃，約 17:35 回到大通。景點順序和時間可能依天氣、路況調整。" },
+      { type:"move", time:"7:15", to:"往集合點", options:[
+        { title:"地鐵南北線", rec:true, detail:"中島公園站往麻生方向坐 2 站到「大通站」，走到「31 號出口」。07:40 集合，逾時不候，請 07:30 前到。" } ] },
+      { type:"spot", time:"約 08:30・停留 1.5 小時", name:"豐平峽水壩",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/%E8%B1%8A%E5%B9%B3%E5%B3%A1%E3%83%80%E3%83%A0%E9%A7%90%E8%BB%8A%E5%A0%B4%EF%BC%88Hoheikyo_dam_parking_Article%EF%BC%89_-_panoramio.jpg/500px-%E8%B1%8A%E5%B9%B3%E5%B3%A1%E3%83%80%E3%83%A0%E9%A7%90%E8%BB%8A%E5%A0%B4%EF%BC%88Hoheikyo_dam_parking_Article%EF%BC%89_-_panoramio.jpg",
-        intro:"群山環抱的水壩湖，要換搭安靜的電動巴士進去（車票已含）。這幾天正是這裡紅葉最漂亮的時候。",
+        intro:"群山環抱的水壩湖。往水壩要換搭安靜的電動巴士進去，這幾天正是這裡紅葉最漂亮的時候。",
+        tips:["電動巴士車票沒有含在團費裡，現場自費（帶現金）"],
         map:"豊平峡ダム" },
-      { type:"spot", time:"10:20", name:"定山溪",
+      { type:"spot", time:"約 10:20・停留 1 小時", name:"定山溪溫泉街",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/%E5%AE%9A%E5%B1%B1%E6%B8%93%E4%BA%8C%E8%A6%8B%E5%90%8A%E6%A9%8B_%28Jozankei_Futami_suspension_bridge%29_-_panoramio.jpg/500px-%E5%AE%9A%E5%B1%B1%E6%B8%93%E4%BA%8C%E8%A6%8B%E5%90%8A%E6%A9%8B_%28Jozankei_Futami_suspension_bridge%29_-_panoramio.jpg",
-        intro:"溪谷裡的溫泉小鎮，紅色吊橋配上溪流和山景。街上有免費足湯可以泡泡腳。",
+        intro:"溪谷裡的溫泉小鎮，紅色吊橋配上溪流和山景，在這裡吃午餐（自理）。街上有免費足湯可以泡泡腳。",
         tips:["泡足湯可以帶一條小毛巾"],
-        map:"定山渓 二見吊橋" },
-      { type:"spot", time:"12:20", name:"洞爺湖",
-        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/130922_Lake_Toya_Toyako_Hokkaido_Japan03s3.jpg/500px-130922_Lake_Toya_Toyako_Hokkaido_Japan03s3.jpg",
-        intro:"火山形成的大湖，湖中間有小島，冬天也不結冰。在湖邊散步、吃午餐，停留約一個半小時。",
-        map:"洞爺湖温泉" },
-      { type:"meal", label:"午餐", near:"洞爺湖温泉" },
-      { type:"spot", time:"14:00", name:"昭和新山",
-        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Mount_Showa-shinzan_01.jpg/500px-Mount_Showa-shinzan_01.jpg",
-        intro:"八十多年前從麥田裡慢慢長出來的火山，紅褐色的山頭到現在還會冒煙。",
-        tips:["想看更高的風景，可以自費搭有珠山纜車；旁邊的熊牧場也是自費"],
-        map:"昭和新山" },
-      { type:"spot", time:"16:00", name:"羊蹄山名水公園",
-        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Kyogoku%2C_Fukidashi_Park_2024.jpg/500px-Kyogoku%2C_Fukidashi_Park_2024.jpg",
-        intro:"羊蹄山的雪水在地底過濾很久才湧出來，是日本「名水百選」。泉水可以直接喝，清涼又甘甜。",
-        tips:["帶個空水瓶，可以裝泉水"],
-        map:"ふきだし公園 京極" },
-      { type:"note", text:"約 18:00 回到大通站 31 號出口，搭南北線 2 站回中島公園。" },
-      { type:"meal", label:"晚餐", near:"大通駅" }
+        map:"定山渓温泉" },
+      { type:"meal", label:"午餐", near:"定山渓温泉" },
+      { type:"spot", time:"約 12:00・停留 1 小時 10 分", name:"瀧野鈴蘭丘陵公園",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Takino_Suzuran_Hillside_Park_-_Sep_17%2C_2023.jpg/500px-Takino_Suzuran_Hillside_Park_-_Sep_17%2C_2023.jpg",
+        intro:"札幌近郊很大的國營公園，有花田、森林步道和瀑布。秋天山林開始轉色，園區很大，挑一區慢慢走就好。",
+        tips:["門票已含在團費裡"],
+        map:"国営滝野すずらん丘陵公園" },
+      { type:"spot", time:"約 14:00・停留 1.5 小時", name:"支笏湖",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Lake_Shikotsu_Mt_Fuppushi01bs4272.jpg/500px-Lake_Shikotsu_Mt_Fuppushi01bs4272.jpg",
+        intro:"火山形成的大湖，湖水非常清澈，是日本最北邊冬天不結冰的湖。湖邊有小小的溫泉街，可以散步看山看湖。",
+        tips:["湖上觀光船是自費，想坐再坐"],
+        map:"支笏湖温泉" },
+      { type:"note", text:"約 17:35 回到大通站 31 號出口，搭南北線 2 站回中島公園。" },
+      { type:"meal", label:"晚餐", near:"大通駅" },
+      { type:"hotel", time:"晚上", hotel:"jal", action:"回飯店泡溫泉 ♨" }
     ]
   },
   {
-    date:"2026-10-14", route:["sapporo","daibutsu","sapporo"], short:"10/14", week:"三",
-    title:"<em>頭大佛</em>＋換住宿", hotel:"grandir",
-    weather:{ name:"札幌・真駒內", lat:42.99, lon:141.35 },
-    items:[
-      { type:"hotel", time:"約 9:00", hotel:"jal", action:"退房，行李寄放櫃台" },
-      { type:"move", to:"往頭大佛", options:[
-        { title:"地鐵＋公車", rec:true, detail:"南北線坐到終點「真駒內站」約 15 分，轉中央巴士「真108」或「真106」約 20–25 分。公車大約 1 小時 1 班。" },
-        { title:"地鐵＋計程車", detail:"到真駒內站後直接搭計程車，不用等公車。" } ] },
-      { type:"spot", time:"上午", name:"頭大佛",
-        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/%E9%A0%AD%E5%A4%A7%E4%BB%8F%EF%BC%882024%EF%BC%89.jpg/500px-%E9%A0%AD%E5%A4%A7%E4%BB%8F%EF%BC%882024%EF%BC%89.jpg",
-        intro:"安藤忠雄設計，大佛被長滿植物的小山丘「藏」起來，只露出頭。走過長長的隧道，抬頭才看見大佛。",
-        tips:["開放 9:00–16:00・門票 ¥1,000"],
-        map:"頭大仏 真駒内滝野霊園" },
-      { type:"move", time:"11:55", to:"回真駒內站", options:[
-        { title:"公車", rec:true, detail:"搭頭大佛前 11:55 的公車回真駒內站。" },
-        { title:"計程車", detail:"請園區櫃台幫忙叫車。" } ] },
-      { type:"meal", label:"午餐", near:"真駒内駅" },
-      { type:"move", to:"拿行李 → 民宿", options:[
-        { title:"地鐵＋計程車", rec:true, detail:"南北線回「中島公園站」拿行李，再搭計程車到民宿，約 15–20 分鐘。" } ] },
-      { type:"hotel", time:"15:00 後", hotel:"grandir", action:"Check-in" },
-      { type:"meal", label:"晚餐", near:"北13条東駅" }
-    ]
-  },
-  {
-    date:"2026-10-15", route:["sapporo","otaru","sapporo"], short:"10/15", week:"四",
-    title:"<em>小樽</em>一日遊", pendingTitle:"行程待討論", hotel:"grandir",
+    date:"2026-10-14", route:["sapporo","otaru","sapporo"], short:"10/14", week:"三",
+    title:"<em>小樽</em>一日遊＋換住宿", hotel:"grandir",
     weather:{ name:"小樽", lat:43.197, lon:140.994 },
     items:[
+      { type:"hotel", time:"約 9:00", hotel:"jal", action:"退房，行李寄放櫃台" },
       { type:"move", to:"往小樽", options:[
-        { title:"地鐵＋JR", rec:true, detail:"東豐線坐 1 站到「札幌站」，換 JR 到「小樽站」約 35–45 分。坐右邊靠窗，有機會看到海。" } ] },
+        { title:"地鐵＋JR", rec:true, detail:"中島公園站往麻生方向坐 3 站到「札幌站」，換 JR 到「小樽站」約 35–45 分。坐右邊靠窗，有機會看到海。" } ] },
       { type:"spot", name:"小樽運河",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Otaru_Canal_Center.jpg/500px-Otaru_Canal_Center.jpg",
         intro:"百年前的港口運河，兩旁是石造老倉庫，現在變成餐廳和小店。沿著運河散步拍照最悠閒。",
@@ -554,65 +534,121 @@ const DAYS = [
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Otaru_Music_Box_Museum_2014.jpg/500px-Otaru_Music_Box_Museum_2014.jpg",
         intro:"老街盡頭的石造建築，裡面滿滿都是音樂盒。門口的蒸汽時鐘每 15 分鐘會「嗚～」地響一次。",
         map:"小樽オルゴール堂 本館" },
-      { type:"move", to:"回民宿", options:[
-        { title:"JR＋地鐵", rec:true, detail:"JR 小樽站到札幌站，換東豐線 1 站到北13條東站。" } ] },
-      { type:"meal", label:"晚餐", near:"札幌駅" }
+      { type:"move", time:"約 15:00", to:"回飯店拿行李", options:[
+        { title:"JR＋地鐵", rec:true, detail:"JR 小樽站到「札幌站」約 35–45 分，換南北線（往真駒內）3 站到「中島公園站」，回 JAL 拿行李。" } ] },
+      { type:"move", to:"往民宿", options:[
+        { title:"計程車", rec:true, detail:"JAL 搭計程車到民宿約 15–20 分鐘，帶著行李最省力。" } ] },
+      { type:"hotel", time:"約 16:30", hotel:"grandir", action:"Check-in・休息一下" },
+      { type:"spot", time:"傍晚", name:"札幌諏訪神社",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Sapporo_Suwa_shinto_shrine%2C_Hokkaido_Prefecture%3B_July_2021_%2801%29.jpg/500px-Sapporo_Suwa_shinto_shrine%2C_Hokkaido_Prefecture%3B_July_2021_%2801%29.jpg",
+        intro:"民宿附近的小神社，拜的是一對夫妻神和他們的 22 個孩子，保佑家庭圓滿、姻緣和平安生產。洗手的水池一年四季都放滿鮮花，很好拍。",
+        tips:["北13條東站走路約 3 分","買御守的社務所 9:00–17:00，想買要在 17:00 前到"],
+        map:"札幌諏訪神社" },
+      { type:"meal", label:"晚餐", near:"北13条東駅" }
     ]
   },
   {
-    date:"2026-10-16", route:["sapporo","koibito","sapporo"], short:"10/16", week:"五",
-    title:"銀杏・<em>白色戀人</em>・狸小路", hotel:"richmond",
+    date:"2026-10-15", route:["sapporo","asahiyama","biei","aoiike","sapporo"], short:"10/15", week:"四",
+    title:"<em>旭山動物園</em>・青池一日遊", hotel:"grandir",
+    weather:{ name:"旭川・美瑛", lat:43.68, lon:142.45 },
+    items:[
+      { type:"note", text:"跟一日遊團出發（有中文導遊），坐遊覽車不用自己轉車。午餐自理，約 18:00 回到札幌電視塔。時間是大概的，依導遊當天安排。" },
+      { type:"move", time:"7:15", to:"往集合點：札幌電視塔", options:[
+        { title:"地鐵東豐線", rec:true, detail:"民宿走到「北13條東站」，東豐線（往福住）坐 2 站到「大通站」約 5 分，跟著「さっぽろテレビ塔」指標出站。集合點在電視塔 1 樓 Information Center 前，07:40 集合、07:50 發車，逾時不候。" },
+        { title:"計程車", detail:"民宿直接坐到札幌電視塔約 10 分鐘，不用走樓梯。" } ] },
+      { type:"spot", time:"10:30–12:30・停留 2 小時", name:"旭山動物園",
+        photo:"img-asahiyama.jpg",
+        intro:"日本最有名的動物園之一，看的是動物「本來的樣子」：企鵝從頭頂的水中隧道游過、北極熊撲進水裡、海豹在透明圓管裡上上下下。",
+        tips:["午餐自理，在動物園裡吃","門票已含在團費裡","園區在山坡上，穿好走的鞋"],
+        map:"旭山動物園" },
+      { type:"meal", label:"午餐（自理）", near:"旭山動物園" },
+      { type:"spot", time:"約 13:15・停留 15 分", name:"美瑛拼布之路・七星之樹",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/140724_Biei_Hokkaido_Japan01s8.jpg/500px-140724_Biei_Hokkaido_Japan01s8.jpg",
+        intro:"美瑛的丘陵上，一塊塊不同顏色的田像拼布一樣。拼布之路和「Ken & Mary 之樹」是坐在車上看，「七星之樹」會下車拍照。十月田裡多已收成，換成金黃、褐色的秋天風景。",
+        tips:["樹都在私人農地旁，拍照時別走進田裡"],
+        map:"セブンスターの木" },
+      { type:"spot", time:"約 13:50・停留 20 分", name:"白鬚瀑布",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Shirahige_Falls%2C_Biei_River%2C_Hokkaido%2C_Japan.jpg/500px-Shirahige_Falls%2C_Biei_River%2C_Hokkaido%2C_Japan.jpg",
+        intro:"地下水從岩壁縫裡流出來，像老爺爺的白鬍子一樣散開，落進藍色的河裡。站在橋上就看得到。",
+        map:"白ひげの滝" },
+      { type:"spot", time:"約 14:20・停留 30 分", name:"青池",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Shirogane_Blue_Pond%2C_Biei%2C_Hokkaido_Japan.jpg/500px-Shirogane_Blue_Pond%2C_Biei%2C_Hokkaido_Japan.jpg",
+        intro:"森林裡的小池塘，水是夢幻的藍色，一根根枯木站在水中。藍色深淺每天會隨天氣和光線變化。",
+        map:"白金青い池" },
+      { type:"note", text:"約 18:00 回到札幌電視塔，坐東豐線 2 站回北13條東站。" },
+      { type:"meal", label:"晚餐", near:"大通駅" }
+    ]
+  },
+  {
+    date:"2026-10-16", route:["sapporo","koibito","jingu","sapporo"], short:"10/16", week:"五",
+    title:"北大・<em>白色戀人</em>・北海道神宮", hotel:"tokyu",
     weather:{ name:"札幌", lat:43.0618, lon:141.3545 },
     items:[
-      { type:"hotel", time:"9:30", hotel:"grandir", action:"退房" },
-      { type:"move", to:"先把行李寄到里士滿", options:[
-        { title:"計程車", rec:true, detail:"民宿到里士滿約 15 分鐘，先寄放行李。" } ] },
+      { type:"hotel", time:"9:30", hotel:"grandir", action:"退房（10:00 前）" },
+      { type:"move", to:"先把行李寄到飯店", options:[
+        { title:"計程車", rec:true, detail:"民宿到東急STAY 約 15 分鐘，先寄放行李。" } ] },
       { type:"move", to:"往北海道大學", options:[
-        { title:"地鐵南北線", rec:true, detail:"大通站往麻生方向坐 2 站到「北12條站」，走路約 5 分鐘。" } ] },
-      { type:"spot", time:"10:00", name:"北大銀杏大道",
+        { title:"地鐵南北線", rec:true, detail:"大通站往麻生方向坐 2 站到「北12條站」，走路約 5 分鐘。" },
+        { title:"計程車", detail:"飯店直接坐到北大正門約 10 分鐘。" } ] },
+      { type:"spot", time:"約 10:15", name:"北大銀杏大道",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Ginkgo_tree-lined_avenue_in_Hokkaido_University_05.jpg/500px-Ginkgo_tree-lined_avenue_in_Hokkaido_University_05.jpg",
         intro:"北海道大學裡約 380 公尺的銀杏大道，兩排大樹像隧道一樣，校園大又安靜。",
         tips:["今年最黃約在 10/31，我們去時大概剛轉黃"],
         map:"北海道大学 イチョウ並木" },
       { type:"move", time:"11:30", to:"往白色戀人公園", options:[
-        { title:"走路＋地鐵", rec:true, detail:"穿過北大校園走到札幌站，南北線到大通，換東西線到「宮之澤站」，走路約 7 分鐘。" },
+        { title:"地鐵", rec:true, detail:"北12條站坐南北線 2 站回「大通站」，換東西線坐到終點「宮之澤站」，走路約 7 分鐘。全程約 30 分。" },
         { title:"計程車", detail:"從北大直接坐過去約 20–25 分鐘，比較不累。" } ] },
-      { type:"spot", time:"12:00–14:30", name:"白色戀人公園",
+      { type:"spot", time:"12:00–14:15", name:"白色戀人公園",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Shiroi_Koibito_Park_20260703p.jpg/500px-Shiroi_Koibito_Park_20260703p.jpg",
         intro:"北海道名產「白色戀人」的餅乾工廠，像歐洲小鎮。可以看餅乾怎麼做出來，還有花園和甜點店。",
         tips:["營業 10:00–18:00・門票 ¥800"],
         map:"白い恋人パーク" },
       { type:"meal", label:"午餐", near:"白い恋人パーク" },
-      { type:"move", to:"回飯店", options:[
-        { title:"地鐵東西線", rec:true, detail:"宮之澤站直達「大通站」，走路 5 分鐘到飯店。" } ] },
-      { type:"hotel", time:"15:00", hotel:"richmond", action:"Check-in・休息一下" },
+      { type:"move", time:"14:15", to:"往北海道神宮", options:[
+        { title:"地鐵＋走路", rec:true, detail:"宮之澤站坐東西線（往新札幌）5 站到「圓山公園站」約 10 分，穿過圓山公園走路約 15 分到神宮。" },
+        { title:"地鐵＋計程車", detail:"到圓山公園站後坐計程車到神宮約 5 分鐘，省腳力。" } ] },
+      { type:"spot", time:"約 15:00–16:15", name:"北海道神宮",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Hokkaido_Jingu.JPG/500px-Hokkaido_Jingu.JPG",
+        intro:"北海道最重要的神社，藏在圓山公園的大樹林裡。參道又長又安靜，常有松鼠跑來跑去。境內茶屋有賣小烤餅「判官さま」。",
+        tips:["10 月開門 6:00–17:00，16:15 左右往回走比較從容","今天來不及的話，就改到 10/17 早上去"],
+        map:"北海道神宮" },
+      { type:"move", time:"16:15", to:"回飯店", options:[
+        { title:"地鐵東西線", rec:true, detail:"圓山公園站坐東西線 3 站到「大通站」，2 號出口走路約 3 分鐘。" } ] },
+      { type:"hotel", time:"約 17:00", hotel:"tokyu", action:"Check-in・休息一下" },
       { type:"spot", time:"晚上", name:"狸小路",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Tanukikoji_Shopping_Arcade_-_Jul_21%2C_2023.jpg/500px-Tanukikoji_Shopping_Arcade_-_Jul_21%2C_2023.jpg",
-        intro:"有屋頂的長長商店街，下雨也不怕。藥妝、伴手禮、餐廳都在這裡，飯店出門就到。",
+        intro:"有屋頂的長長商店街，下雨也不怕。藥妝、伴手禮、餐廳都在這裡，飯店走幾分鐘就到。",
         map:"狸小路商店街" },
       { type:"meal", label:"最後一頓晚餐", near:"狸小路商店街" }
     ]
   },
   {
     date:"2026-10-17", route:["sapporo","airport"], short:"10/17", week:"六",
-    title:"<em>回家</em>囉", hotel:null,
+    title:"<em>新千歲機場</em>逛逛・回家", hotel:null,
     weather:{ name:"札幌", lat:43.0618, lon:141.3545 },
     items:[
+      { type:"note", text:"如果昨天來不及去北海道神宮，今天早上改去神宮（6:00 就開門，大通站坐東西線 3 站到圓山公園站），二條市場就看時間。" },
       { type:"spot", time:"9:00", name:"二條市場",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Nijo_fish_Market_2014.jpg/500px-Nijo_fish_Market_2014.jpg",
-        intro:"百年歷史的市場，螃蟹、海膽、哈密瓜擺滿攤位，很熱鬧。從飯店走路約 10 分鐘。",
+        intro:"百年歷史的市場，螃蟹、海膽、哈密瓜擺滿攤位，很熱鬧。從飯店走路約 12 分鐘。",
         map:"二条市場 札幌" },
-      { type:"meal", label:"早午餐", near:"二条市場" },
+      { type:"meal", label:"早餐", near:"二条市場" },
       { type:"spot", name:"大通公園・電視塔",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Sapporo_TV_Tower_and_Odori_Park_02.jpg/500px-Sapporo_TV_Tower_and_Odori_Park_02.jpg",
         intro:"札幌市中心長長的綠色公園，盡頭是紅色電視塔。坐在長椅上看看花圃，慢慢逛最後一圈。",
         map:"大通公園 札幌" },
-      { type:"hotel", time:"11:30", hotel:"richmond", action:"回飯店拿行李" },
-      { type:"move", time:"12:15", to:"往 JR 札幌站", options:[
+      { type:"hotel", time:"10:45", hotel:"tokyu", action:"回飯店退房（11:00 前）" },
+      { type:"move", time:"11:00", to:"往 JR 札幌站", options:[
         { title:"計程車", rec:true, detail:"約 5–10 分鐘。" },
-        { title:"走地下街", detail:"行李少的話，走地下街 Chi-Ka-Ho 約 10 分鐘，不怕下雨。" } ] },
-      { type:"move", time:"12:30", to:"往新千歲機場", options:[
-        { title:"JR 快速 Airport", rec:true, detail:"札幌站直達機場，約 37–40 分鐘。約 13:45 到機場報到。" } ] },
+        { title:"走地下街", detail:"行李少的話，從大通站走地下街 Chi-Ka-Ho 到札幌站約 10–15 分鐘，不怕下雨。" } ] },
+      { type:"move", time:"11:30", to:"往新千歲機場", options:[
+        { title:"JR 快速 Airport", rec:true, detail:"札幌站直達機場，約 37–40 分鐘，12:15 左右到。" } ] },
+      { type:"spot", time:"12:15–14:15", name:"新千歲機場",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/New_Chitose_Airport_International_terminal_20190703.jpg/500px-New_Chitose_Airport_International_terminal_20190703.jpg",
+        intro:"機場本身就像一個大商場。國內線航廈有「北海道拉麵道場」、ROYCE' 巧克力工廠、哆啦A夢樂園，午餐和伴手禮一次搞定。",
+        tips:["國內線和國際線航廈有通道相連，走路約 10 分鐘","14:25 前（起飛前 2 小時）回到國際線報到"],
+        map:"新千歳空港 国内線ターミナル" },
+      { type:"meal", label:"午餐", near:"新千歳空港 国内線ターミナル" },
       { type:"flight", flight:"back" }
     ]
   }
@@ -765,7 +801,7 @@ function overviewMap(){
   g += deco.mtn(...P(43.62,143.15).map(n=>n.toFixed(0)), 1.1) + deco.tree(...P(43.25,143.55)) + deco.tree(...P(42.95,143.15)) + deco.tree(...P(44.4,142.3));
   g += deco.wave(28,70) + deco.wave(350,300) + deco.wave(40,330) + deco.wave(300,20);
   g += '<g font-size="12" font-weight="700" fill="#fff" opacity=".9" text-anchor="middle"><text x="70" y="110">日本海</text><text x="300" y="300">太平洋</text><text x="300" y="48">鄂霍次克海</text></g>';
-  g += [["旭川",43.77,142.36],["函館",41.77,140.73],["知床",44.07,145.0],["稚內",45.42,141.67]].map(([n,la,lo])=>{
+  g += [["函館",41.77,140.73],["知床",44.07,145.0],["稚內",45.42,141.67]].map(([n,la,lo])=>{
     const [x,y] = P(la,lo); return '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="2.5" fill="#c9b99c"/><text x="'+(x+5).toFixed(1)+'" y="'+(y+4).toFixed(1)+'" font-size="11" fill="#9c8f7c">'+n+'</text>';
   }).join("");
   const pts = OVERVIEW_MAP.map(o => { const p = PLACES[o.place]; return [o, p, ...P(p.lat,p.lon)]; });
