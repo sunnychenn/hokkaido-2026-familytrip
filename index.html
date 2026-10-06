@@ -163,6 +163,12 @@ button{font:inherit;color:inherit}
 .peek svg{width:18px;height:18px;transition:transform .2s}
 .spot.fold.open .info{padding-bottom:16px}
 .spot.fold.open .peek svg{transform:rotate(180deg)}
+/* 自由決定／視情況的行程：虛線卡片，預設收合（收合時不顯示照片） */
+.spot.optional{background:rgba(255,255,255,.55);border:2px dashed #dccdb2;box-shadow:none}
+.spot.optional:not(.open) .thumb{display:none}
+.spot.optional:not(.open){padding-top:10px;padding-bottom:26px}
+.node.opt:before{border-style:dashed;border-color:#c9b99c}
+.tag.opt{color:#4f7f83;background:#e3f2f3}
 
 /* ---------- 地圖 ---------- */
 .mapcard{position:relative;background:#7cc3c8;border-radius:22px;overflow:hidden;margin:10px 0 14px;box-shadow:0 2px 12px rgba(110,85,50,.08)}
@@ -475,8 +481,9 @@ const DAYS = [
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/New_Chitose_Airport_International_terminal_20190703.jpg/500px-New_Chitose_Airport_International_terminal_20190703.jpg",
         intro:"北海道的大門。入境、拿完行李後，跟著「JR」指標走到地下一樓的車站。",
         map:"新千歳空港 国際線ターミナル" },
-      { type:"move", to:"往飯店", options:[
-        { title:"JR 快速 Airport ＋ 地鐵", rec:true, detail:"JR 到「札幌站」約 37–40 分，再換地鐵南北線（往真駒內）到「中島公園站」約 5 分。" },
+      { type:"move", time:"16:16", to:"往飯店", options:[
+        { title:"直達巴士（札幌都心直行便）", rec:true, detail:"國際線航廈「84 號乘車處」16:16 發車，不用轉車，17:23 到「中島公園」站，下車走到飯店。大人 ¥1,500，可付現金、交通 IC 卡或信用卡感應。這班之後當天就沒有直達車了，出關後直接往乘車處走。" },
+        { title:"來不及的話：JR 快速 Airport ＋ 地鐵", detail:"JR 到「札幌站」約 37–40 分（班次很多），再換地鐵南北線（往真駒內）到「中島公園站」約 5 分。" },
         { title:"JR ＋ 計程車", detail:"JR 到札幌站後搭計程車，約 10 分鐘。累了或行李多就選這個。" } ] },
       { type:"hotel", time:"約 17:30", hotel:"jal", action:"Check-in" },
       { type:"meal", label:"晚餐", near:"中島公園駅" },
@@ -523,15 +530,16 @@ const DAYS = [
   },
   {
     date:"2026-10-14", route:["sapporo","otaru","sapporo"], short:"10/14", week:"三",
-    title:"<em>小樽</em>一日遊＋換住宿", hotel:"grandir",
+    title:"<em>小樽</em>慢慢逛＋換住宿", hotel:"grandir",
     weather:{ name:"小樽", lat:43.197, lon:140.994 },
     items:[
       { type:"hotel", time:"約 9:00", hotel:"jal", action:"退房，行李寄放櫃台" },
       { type:"move", to:"往小樽", options:[
         { title:"地鐵＋JR", rec:true, detail:"中島公園站往麻生方向坐 3 站到「札幌站」，換 JR 到「小樽站」約 35–45 分。坐右邊靠窗，有機會看到海。" } ] },
+      { type:"note", text:"今天整天在小樽慢慢逛，不趕時間。逛累了就找間咖啡店坐坐，晚餐也可以在小樽吃完再回札幌。" },
       { type:"spot", name:"小樽運河",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Otaru_Canal_Center.jpg/500px-Otaru_Canal_Center.jpg",
-        intro:"百年前的港口運河，兩旁是石造老倉庫，現在變成餐廳和小店。沿著運河散步拍照最悠閒。",
+        intro:"百年前的港口運河，兩旁是石造老倉庫，現在變成餐廳和小店。沿著運河散步拍照最悠閒，傍晚亮燈後也很漂亮。",
         map:"小樽運河" },
       { type:"meal", label:"午餐", near:"小樽運河" },
       { type:"spot", name:"堺町通",
@@ -542,17 +550,12 @@ const DAYS = [
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Otaru_Music_Box_Museum_2014.jpg/500px-Otaru_Music_Box_Museum_2014.jpg",
         intro:"老街盡頭的石造建築，裡面滿滿都是音樂盒。門口的蒸汽時鐘每 15 分鐘會「嗚～」地響一次。",
         map:"小樽オルゴール堂 本館" },
-      { type:"move", time:"約 15:00", to:"回飯店拿行李", options:[
+      { type:"meal", label:"晚餐（可以在小樽吃）", near:"小樽駅" },
+      { type:"move", time:"晚上", to:"回飯店拿行李", options:[
         { title:"JR＋地鐵", rec:true, detail:"JR 小樽站到「札幌站」約 35–45 分，換南北線（往真駒內）3 站到「中島公園站」，回 JAL 拿行李。" } ] },
       { type:"move", to:"往民宿", options:[
-        { title:"計程車", rec:true, detail:"JAL 搭計程車到民宿約 15–20 分鐘，帶著行李最省力。" } ] },
-      { type:"hotel", time:"約 16:30", hotel:"grandir", action:"Check-in・休息一下" },
-      { type:"spot", time:"傍晚", name:"札幌諏訪神社",
-        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Sapporo_Suwa_shinto_shrine%2C_Hokkaido_Prefecture%3B_July_2021_%2801%29.jpg/500px-Sapporo_Suwa_shinto_shrine%2C_Hokkaido_Prefecture%3B_July_2021_%2801%29.jpg",
-        intro:"民宿附近的小神社，拜的是一對夫妻神和他們的 22 個孩子，保佑家庭圓滿、姻緣和平安生產。洗手的水池一年四季都放滿鮮花，很好拍。",
-        tips:["北13條東站走路約 3 分","買御守的社務所 9:00–17:00，想買要在 17:00 前到"],
-        map:"札幌諏訪神社" },
-      { type:"meal", label:"晚餐", near:"北13条東駅" }
+        { title:"計程車", rec:true, detail:"JAL 搭計程車到民宿約 15–20 分鐘，帶著行李最省力。民宿沒有櫃台，晚一點到也可以自己入住。" } ] },
+      { type:"hotel", time:"晚上", hotel:"grandir", action:"Check-in" }
     ]
   },
   {
@@ -588,44 +591,41 @@ const DAYS = [
     ]
   },
   {
-    date:"2026-10-16", route:["sapporo","koibito","jingu","sapporo"], short:"10/16", week:"五",
-    title:"北大・<em>白色戀人</em>・北海道神宮", hotel:"tokyu",
+    date:"2026-10-16", route:["sapporo","jingu","koibito","sapporo"], short:"10/16", week:"五",
+    title:"北海道神宮・<em>白色戀人</em>・逛街", hotel:"tokyu",
     weather:{ name:"札幌", lat:43.0618, lon:141.3545 },
     items:[
-      { type:"hotel", time:"9:30", hotel:"grandir", action:"退房（10:00 前）" },
+      { type:"spot", time:"一早・退房前", name:"札幌諏訪神社", optional:"自由決定",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Sapporo_Suwa_shinto_shrine%2C_Hokkaido_Prefecture%3B_July_2021_%2801%29.jpg/500px-Sapporo_Suwa_shinto_shrine%2C_Hokkaido_Prefecture%3B_July_2021_%2801%29.jpg",
+        intro:"民宿附近的小神社，拜的是一對夫妻神和他們的 22 個孩子，保佑家庭圓滿、姻緣和平安生產。洗手的水池一年四季都放滿鮮花，很好拍。",
+        tips:["北13條東站走路約 3 分","買御守的社務所 9:00 開始，想買的話 9:00 後去，逛完回民宿 10:00 前退房"],
+        map:"札幌諏訪神社" },
+      { type:"hotel", time:"10:00 前", hotel:"grandir", action:"退房" },
       { type:"move", to:"先把行李寄到飯店", options:[
         { title:"計程車", rec:true, detail:"民宿到東急STAY 約 15 分鐘，先寄放行李。" } ] },
-      { type:"move", to:"往北海道大學", options:[
-        { title:"地鐵南北線", rec:true, detail:"大通站往麻生方向坐 2 站到「北12條站」，走路約 5 分鐘。" },
-        { title:"計程車", detail:"飯店直接坐到北大正門約 10 分鐘。" } ] },
-      { type:"spot", time:"約 10:15", name:"北大銀杏大道",
-        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Ginkgo_tree-lined_avenue_in_Hokkaido_University_05.jpg/500px-Ginkgo_tree-lined_avenue_in_Hokkaido_University_05.jpg",
-        intro:"北海道大學裡約 380 公尺的銀杏大道，兩排大樹像隧道一樣，校園大又安靜。",
-        tips:["今年最黃約在 10/31，我們去時大概剛轉黃"],
-        map:"北海道大学 イチョウ並木" },
-      { type:"move", time:"11:30", to:"往白色戀人公園", options:[
-        { title:"地鐵", rec:true, detail:"北12條站坐南北線 2 站回「大通站」，換東西線坐到終點「宮之澤站」，走路約 7 分鐘。全程約 30 分。" },
-        { title:"計程車", detail:"從北大直接坐過去約 20–25 分鐘，比較不累。" } ] },
-      { type:"spot", time:"12:00–14:15", name:"白色戀人公園",
+      { type:"move", to:"往北海道神宮", options:[
+        { title:"地鐵＋走路", rec:true, detail:"大通站坐東西線（往宮の沢）3 站到「圓山公園站」約 5 分，穿過圓山公園走路約 15 分到神宮。" },
+        { title:"地鐵＋計程車", detail:"到圓山公園站後坐計程車到神宮約 5 分鐘，省腳力。" } ] },
+      { type:"spot", time:"約 10:45–12:00", name:"北海道神宮",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Hokkaido_Jingu.JPG/500px-Hokkaido_Jingu.JPG",
+        intro:"北海道最重要的神社，藏在圓山公園的大樹林裡。參道又長又安靜，常有松鼠跑來跑去。境內茶屋有賣小烤餅「判官さま」。",
+        tips:["10 月開門 6:00–17:00"],
+        map:"北海道神宮" },
+      { type:"move", time:"12:00", to:"往白色戀人公園", options:[
+        { title:"地鐵", rec:true, detail:"圓山公園站坐東西線（往宮の沢）5 站到終點「宮之澤站」約 10 分，走路約 7 分鐘。" },
+        { title:"計程車", detail:"從神宮直接坐過去約 15–20 分鐘。" } ] },
+      { type:"spot", time:"約 12:30–14:30", name:"白色戀人公園",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Shiroi_Koibito_Park_20260703p.jpg/500px-Shiroi_Koibito_Park_20260703p.jpg",
         intro:"北海道名產「白色戀人」的餅乾工廠，像歐洲小鎮。可以看餅乾怎麼做出來，還有花園和甜點店。",
         tips:["營業 10:00–18:00・門票 ¥800"],
         map:"白い恋人パーク" },
       { type:"meal", label:"午餐", near:"白い恋人パーク" },
-      { type:"move", time:"14:15", to:"往北海道神宮", options:[
-        { title:"地鐵＋走路", rec:true, detail:"宮之澤站坐東西線（往新札幌）5 站到「圓山公園站」約 10 分，穿過圓山公園走路約 15 分到神宮。" },
-        { title:"地鐵＋計程車", detail:"到圓山公園站後坐計程車到神宮約 5 分鐘，省腳力。" } ] },
-      { type:"spot", time:"約 15:00–16:15", name:"北海道神宮",
-        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Hokkaido_Jingu.JPG/500px-Hokkaido_Jingu.JPG",
-        intro:"北海道最重要的神社，藏在圓山公園的大樹林裡。參道又長又安靜，常有松鼠跑來跑去。境內茶屋有賣小烤餅「判官さま」。",
-        tips:["10 月開門 6:00–17:00，16:15 左右往回走比較從容","今天來不及的話，就改到 10/17 早上去"],
-        map:"北海道神宮" },
-      { type:"move", time:"16:15", to:"回飯店", options:[
-        { title:"地鐵東西線", rec:true, detail:"圓山公園站坐東西線 3 站到「大通站」，2 號出口走路約 3 分鐘。" } ] },
-      { type:"hotel", time:"約 17:00", hotel:"tokyu", action:"Check-in・休息一下" },
-      { type:"spot", time:"晚上", name:"狸小路",
+      { type:"move", to:"回飯店", options:[
+        { title:"地鐵東西線", rec:true, detail:"宮之澤站直達「大通站」約 15 分，2 號出口走路約 3 分鐘。" } ] },
+      { type:"hotel", time:"15:00", hotel:"tokyu", action:"Check-in・睡個午覺" },
+      { type:"spot", time:"傍晚到晚上", name:"狸小路・逛街",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Tanukikoji_Shopping_Arcade_-_Jul_21%2C_2023.jpg/500px-Tanukikoji_Shopping_Arcade_-_Jul_21%2C_2023.jpg",
-        intro:"有屋頂的長長商店街，下雨也不怕。藥妝、伴手禮、餐廳都在這裡，飯店走幾分鐘就到。",
+        intro:"有屋頂的長長商店街，下雨也不怕。藥妝、伴手禮、餐廳都在這裡，飯店走幾分鐘就到。想多逛的話，大通、札幌站周邊的百貨公司和地下街也都連在一起。",
         map:"狸小路商店街" },
       { type:"meal", label:"最後一頓晚餐", near:"狸小路商店街" }
     ]
@@ -635,26 +635,21 @@ const DAYS = [
     title:"<em>新千歲機場</em>逛逛・回家", hotel:null,
     weather:{ name:"札幌", lat:43.0618, lon:141.3545 },
     items:[
-      { type:"note", text:"如果昨天來不及去北海道神宮，今天早上改去神宮（6:00 就開門，大通站坐東西線 3 站到圓山公園站），二條市場就看時間。" },
-      { type:"spot", time:"9:00", name:"二條市場",
-        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Nijo_fish_Market_2014.jpg/500px-Nijo_fish_Market_2014.jpg",
-        intro:"百年歷史的市場，螃蟹、海膽、哈密瓜擺滿攤位，很熱鬧。從飯店走路約 12 分鐘。",
-        map:"二条市場 札幌" },
-      { type:"meal", label:"早餐", near:"二条市場" },
-      { type:"spot", name:"大通公園・電視塔",
-        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Sapporo_TV_Tower_and_Odori_Park_02.jpg/500px-Sapporo_TV_Tower_and_Odori_Park_02.jpg",
-        intro:"札幌市中心長長的綠色公園，盡頭是紅色電視塔。坐在長椅上看看花圃，慢慢逛最後一圈。",
-        map:"大通公園 札幌" },
-      { type:"hotel", time:"10:45", hotel:"tokyu", action:"回飯店退房（11:00 前）" },
+      { type:"spot", time:"早上・退房前", name:"北大銀杏大道", optional:"視情況",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Ginkgo_tree-lined_avenue_in_Hokkaido_University_05.jpg/500px-Ginkgo_tree-lined_avenue_in_Hokkaido_University_05.jpg",
+        intro:"北海道大學裡約 380 公尺的銀杏大道，兩排大樹像隧道一樣，校園大又安靜。",
+        tips:["大通站坐南北線（往麻生）2 站到「北12條站」，走路約 5 分","今年最黃約在 10/31，我們去時大概剛轉黃","10:45 前回到飯店退房"],
+        map:"北海道大学 イチョウ並木" },
+      { type:"hotel", time:"11:00 前", hotel:"tokyu", action:"退房" },
       { type:"move", time:"11:00", to:"往 JR 札幌站", options:[
         { title:"計程車", rec:true, detail:"約 5–10 分鐘。" },
         { title:"走地下街", detail:"行李少的話，從大通站走地下街 Chi-Ka-Ho 到札幌站約 10–15 分鐘，不怕下雨。" } ] },
       { type:"move", time:"11:30", to:"往新千歲機場", options:[
         { title:"JR 快速 Airport", rec:true, detail:"札幌站直達機場，約 37–40 分鐘，12:15 左右到。" } ] },
-      { type:"spot", time:"12:15–14:15", name:"新千歲機場",
+      { type:"spot", time:"12:15–14:15", name:"新千歲機場 國內線商場",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/New_Chitose_Airport_International_terminal_20190703.jpg/500px-New_Chitose_Airport_International_terminal_20190703.jpg",
         intro:"機場本身就像一個大商場。國內線航廈有「北海道拉麵道場」、ROYCE' 巧克力工廠、哆啦A夢樂園，午餐和伴手禮一次搞定。",
-        tips:["國內線和國際線航廈有通道相連，走路約 10 分鐘","14:25 前（起飛前 2 小時）回到國際線報到"],
+        tips:["報到櫃台通常起飛前約 3 小時才開，行李可以先放機場的投幣置物櫃，空手去逛","國內線和國際線航廈有通道相連，走路約 10 分鐘","14:25 前（起飛前 2 小時）回到國際線報到"],
         map:"新千歳空港 国内線ターミナル" },
       { type:"meal", label:"午餐", near:"新千歳空港 国内線ターミナル" },
       { type:"flight", flight:"back" }
@@ -888,10 +883,10 @@ function miniTicket(f){
 function renderItem(it){
   switch(it.type){
     case "spot":
-      return '<div class="node"><article class="spot fold">' +
+      return '<div class="node'+(it.optional?' opt':'')+'"><article class="spot fold'+(it.optional?' optional':'')+'">' +
         '<div class="thumb"><img loading="lazy" src="'+esc(it.photo)+'" alt="'+esc(it.name)+'"></div>' +
         '<div class="info">'+(it.time?'<div class="time">'+esc(it.time)+'</div>':"") +
-          '<div class="top"><h3>'+esc(it.name)+pend(it.pending)+'</h3>'+(it.map?mapBtn(it.map):"")+'</div>' +
+          '<div class="top"><h3>'+esc(it.name)+pend(it.pending)+(it.optional?'<span class="tag opt">'+esc(it.optional)+'</span>':'')+'</h3>'+(it.map?mapBtn(it.map):"")+'</div>' +
           '<div class="more"><p>'+esc(it.intro)+'</p>' + (it.tips||[]).map(t=>'<div class="tip">'+esc(t)+'</div>').join("") + '</div>' +
           '<span class="peek" aria-hidden="true">'+ICON.chevS+'</span>' +
         '</div></article></div>';
