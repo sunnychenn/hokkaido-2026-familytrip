@@ -130,7 +130,7 @@ button{font:inherit;color:inherit}
   content:"";position:absolute;left:-20px;top:22px;width:12px;height:12px;border-radius:50%;
   background:#fff;border:3px solid var(--green)
 }
-.node.hotel:before{border-color:#a99ad6}
+.node.hotel:before{border-color:#7cc3c8}
 .node.flight:before{border-color:var(--orange)}
 
 .spot{
@@ -220,6 +220,14 @@ button{font:inherit;color:inherit}
 .mini-route b{font-size:18px;font-weight:900;color:var(--navy)}
 .mini-route i{flex:1;min-width:10px;border-top:2px dashed #ddd0bb}
 .mini-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 住宿小卡（退房、check-in、泡溫泉） */
+.mini.stay .mini-l{flex-basis:58px;background:#7cc3c8;color:#1f4f53}
+.mini.stay .mini-l svg{color:#1f4f53}
+.mini.stay .mini-l b{font-size:12px;line-height:1.2;text-align:center}
+.mini.stay .mini-r{display:flex;align-items:center;gap:8px;padding:8px 10px 8px 12px}
+.mini.stay .mini-t{flex:1;min-width:0}
+.mini.stay .mini-act{font-size:15px;font-weight:900;color:var(--text)}
+.mini.stay .icon-btn{flex:0 0 auto;transform:scale(.85)}
 
 /* ---------- 總覽 ---------- */
 .section{margin-top:22px}
@@ -887,11 +895,12 @@ function renderItem(it){
           '<div class="more"><p>'+esc(it.intro)+'</p>' + (it.tips||[]).map(t=>'<div class="tip">'+esc(t)+'</div>').join("") + '</div>' +
           '<span class="peek" aria-hidden="true">'+ICON.chevS+'</span>' +
         '</div></article></div>';
-    case "hotel": {
+    case "hotel": {   /* 住宿相關做成小卡，不放照片 */
       const h = HOTELS[it.hotel];
-      return '<div class="node hotel"><article class="spot">'+hotelThumb(h)+'' +
-        '<div class="info"><div class="time">'+esc(it.time||"")+'　'+esc(it.action)+'</div>' +
-        '<div class="top"><h3>'+esc(h.name)+pend(h.pending)+'</h3>'+mapBtn(h.map)+'</div></div></article></div>';
+      return '<div class="node hotel"><div class="mini stay">' +
+        '<div class="mini-l">'+ICON.house+'<b>'+esc(it.time||"")+'</b></div>' +
+        '<div class="mini-r"><div class="mini-t"><div class="mini-act">'+esc(it.action)+'</div>' +
+        '<div class="mini-sub">'+esc(h.name)+'</div></div>'+mapBtn(h.map)+'</div></div></div>';
     }
     case "flight":
       return '<div class="node flight">'+miniTicket(FLIGHTS[it.flight])+'</div>';
