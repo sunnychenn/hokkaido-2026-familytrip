@@ -308,6 +308,16 @@ button{font:inherit;color:inherit}
 .gift .g small{display:block;color:var(--muted);font-size:12.5px}
 .gift.done .g b{color:var(--muted);text-decoration:line-through}
 .gift .del{border:0;background:none;color:#c2b6a6;font-size:20px;cursor:pointer;padding:0 6px}
+/* 點文字編輯、按住 ≡ 拖曳排序 */
+.gift{background:var(--card);position:relative}
+.gift .g{cursor:text}
+.gift .g.editing{display:flex;flex-direction:column;gap:5px;cursor:auto}
+.gift .g.editing input{width:100%;height:auto;border:1px solid var(--orange);background:var(--bg);border-radius:10px;padding:6px 10px;font:inherit;font-size:15px;outline:none;accent-color:auto}
+.gift .g.editing input+input{font-size:13px}
+.gift .grip{flex:0 0 auto;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:#b9ac98;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none}
+.gift .grip svg{width:20px;height:20px}
+.gift.dragging{z-index:5;border-radius:12px;box-shadow:0 6px 18px rgba(110,85,50,.18);border-bottom-color:transparent;transition:none}
+.gifts.sorting{-webkit-user-select:none;user-select:none}
 .empty{color:var(--muted);font-size:14px;text-align:center;padding:12px 0 4px}
 .local{font-size:12px;color:var(--muted);margin-top:8px}
 
@@ -379,7 +389,7 @@ button{font:inherit;color:inherit}
         <button>加入</button>
       </form>
       <div class="gifts" id="giftList"></div>
-      <div class="local">只存在這支手機上。</div>
+      <div class="local">點文字可以修改，按住右邊 ≡ 可以拖曳排序。只存在這支手機上。</div>
       </div>
     </details>
 
@@ -392,7 +402,7 @@ button{font:inherit;color:inherit}
         <button>加入</button>
       </form>
       <div class="gifts" id="shopList"></div>
-      <div class="local">只存在這支手機上。</div>
+      <div class="local">點文字可以修改，按住右邊 ≡ 可以拖曳排序。只存在這支手機上。</div>
       </div>
     </details>
 
@@ -1035,21 +1045,68 @@ function renderPack(){
 
 /* ---------- 工具頁：伴手禮、購物清單 ---------- */
 function setupList(id, key, emptyText, subPrefix){
+  /* 每一項：勾選、點文字可以編輯、× 刪除、按住右邊 ≡ 拖曳排序 */
+  const grip = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>';
+  const box = $("#"+id+"List");
   const render = () => {
-    const list = store.get(key, []), box = $("#"+id+"List");
+    const list = store.get(key, []);
     $("#"+id+"Count").textContent = list.length ? list.filter(g=>g.done).length + " / " + list.length : "";
-    box.innerHTML = list.length ? list.map((g,i)=>'<div class="gift'+(g.done?" done":"")+'">' +
+    box.innerHTML = list.length ? list.map((g,i)=>'<div class="gift'+(g.done?" done":"")+'" data-i="'+i+'">' +
         '<input type="checkbox" data-i="'+i+'"'+(g.done?" checked":"")+' aria-label="已買">' +
-        '<div class="g"><b>'+esc(g.name)+'</b>'+(g.who?'<small>'+subPrefix+esc(g.who)+'</small>':"")+'</div>' +
-        '<button class="del" data-del="'+i+'" aria-label="刪除">×</button></div>').join("")
+        '<div class="g" data-edit="'+i+'"><b>'+esc(g.name)+'</b>'+(g.who?'<small>'+subPrefix+esc(g.who)+'</small>':"")+'</div>' +
+        '<button class="del" data-del="'+i+'" aria-label="刪除">×</button>' +
+        (list.length > 1 ? '<span class="grip" aria-label="按住拖曳排序">'+grip+'</span>' : '') + '</div>').join("")
       : '<div class="empty">'+emptyText+'</div>';
-    box.querySelectorAll("input").forEach(el=>el.onchange=()=>{
+    box.querySelectorAll("input[type=checkbox]").forEach(el=>el.onchange=()=>{
       const l = store.get(key, []); l[el.dataset.i].done = el.checked; store.set(key, l); render();
     });
     box.querySelectorAll("[data-del]").forEach(el=>el.onclick=()=>{
       const l = store.get(key, []); l.splice(+el.dataset.del, 1); store.set(key, l); render();
     });
+    box.querySelectorAll("[data-edit]").forEach(el=>el.onclick=()=>startEdit(el));
+    box.querySelectorAll(".grip").forEach(el=>el.onpointerdown=e=>startDrag(e, el.closest(".gift")));
   };
+
+  /* 編輯：點文字 → 變成輸入框，按 Enter 或點別的地方就存檔 */
+  function startEdit(el){
+    if (el.classList.contains("editing")) return;
+    const i = +el.dataset.edit, g = store.get(key, [])[i];
+    el.classList.add("editing");
+    el.innerHTML = '<input class="e1" value="'+esc(g.name)+'" aria-label="名稱">' +
+                   '<input class="e2" value="'+esc(g.who||"")+'" placeholder="'+esc($("#"+id+"Who").placeholder)+'" aria-label="備註">';
+    const e1 = el.querySelector(".e1"); e1.focus(); e1.setSelectionRange(e1.value.length, e1.value.length);
+    let saved = false;
+    const save = () => {
+      if (saved) return; saved = true;
+      const l = store.get(key, []), name = e1.value.trim();
+      if (name) { l[i].name = name; l[i].who = el.querySelector(".e2").value.trim(); store.set(key, l); }
+      render();
+    };
+    el.addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); save(); } if (e.key === "Escape"){ saved = true; render(); } });
+    el.addEventListener("focusout", e => { if (!el.contains(e.relatedTarget)) setTimeout(save, 0); });
+  }
+
+  /* 拖曳排序：按住 ≡ 上下拖，放開就存檔 */
+  function startDrag(e, row){
+    e.preventDefault();
+    const grip = e.currentTarget; grip.setPointerCapture(e.pointerId);
+    let startY = e.clientY;
+    row.classList.add("dragging"); box.classList.add("sorting");
+    const move = ev => {
+      let dy = ev.clientY - startY;
+      const prev = row.previousElementSibling, next = row.nextElementSibling;
+      if (next && dy > next.offsetHeight / 2){ box.insertBefore(next, row); startY += next.offsetHeight; dy = ev.clientY - startY; }
+      else if (prev && dy < -prev.offsetHeight / 2){ box.insertBefore(row, prev); startY -= prev.offsetHeight; dy = ev.clientY - startY; }
+      row.style.transform = "translateY(" + dy + "px)";
+    };
+    const end = () => {
+      grip.removeEventListener("pointermove", move); grip.removeEventListener("pointerup", end); grip.removeEventListener("pointercancel", end);
+      const order = [...box.querySelectorAll(".gift")].map(r => +r.dataset.i), l = store.get(key, []);
+      store.set(key, order.map(i => l[i])); render();
+    };
+    grip.addEventListener("pointermove", move); grip.addEventListener("pointerup", end); grip.addEventListener("pointercancel", end);
+  }
+
   $("#"+id+"Form").onsubmit = e => {
     e.preventDefault();
     const name = $("#"+id+"Name").value.trim(); if (!name) return;
