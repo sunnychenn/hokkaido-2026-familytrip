@@ -166,7 +166,12 @@ button{font:inherit;color:inherit}
 /* 自由決定／視情況的行程：虛線卡片，預設收合（收合時不顯示照片） */
 .spot.optional{background:rgba(255,255,255,.55);border:2px dashed #dccdb2;box-shadow:none}
 .spot.optional:not(.open) .thumb{display:none}
-.spot.optional:not(.open){padding-top:10px;padding-bottom:26px}
+/* 收合時：跟住宿小卡差不多高、名稱淺色、不顯示地圖鈕，箭頭置中在右邊 */
+.spot.optional:not(.open){padding:8px 44px 8px 14px}
+.spot.optional:not(.open) h3{font-size:15px;color:var(--muted);line-height:1.5}
+.spot.optional:not(.open) .icon-btn{display:none}
+.spot.optional:not(.open) .peek{right:16px;top:50%;bottom:auto;transform:translateY(-50%)}
+.spot.optional .time .tag{vertical-align:1px}
 .node.opt:before{border-style:dashed;border-color:#c9b99c}
 .tag.opt{color:#4f7f83;background:#e3f2f3}
 
@@ -890,8 +895,8 @@ function renderItem(it){
     case "spot":
       return '<div class="node'+(it.optional?' opt':'')+'"><article class="spot fold'+(it.optional?' optional':'')+'">' +
         '<div class="thumb"><img loading="lazy" src="'+esc(it.photo)+'" alt="'+esc(it.name)+'"></div>' +
-        '<div class="info">'+(it.time?'<div class="time">'+esc(it.time)+'</div>':"") +
-          '<div class="top"><h3>'+esc(it.name)+pend(it.pending)+(it.optional?'<span class="tag opt">'+esc(it.optional)+'</span>':'')+'</h3>'+(it.map?mapBtn(it.map):"")+'</div>' +
+        '<div class="info">'+(it.time||it.optional?'<div class="time">'+esc(it.time||"")+(it.optional?'<span class="tag opt">'+esc(it.optional)+'</span>':'')+'</div>':"") +
+          '<div class="top"><h3>'+esc(it.name)+pend(it.pending)+'</h3>'+(it.map?mapBtn(it.map):"")+'</div>' +
           '<div class="more"><p>'+esc(it.intro)+'</p>' + (it.tips||[]).map(t=>'<div class="tip">'+esc(t)+'</div>').join("") + '</div>' +
           '<span class="peek" aria-hidden="true">'+ICON.chevS+'</span>' +
         '</div></article></div>';
