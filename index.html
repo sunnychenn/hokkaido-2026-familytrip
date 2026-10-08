@@ -320,6 +320,25 @@ button{font:inherit;color:inherit}
 .gifts.sorting{-webkit-user-select:none;user-select:none}
 .empty{color:var(--muted);font-size:14px;text-align:center;padding:12px 0 4px}
 .local{font-size:12px;color:var(--muted);margin-top:8px}
+/* 個人記帳 */
+.exp-form{display:grid;grid-template-columns:1.6fr 1fr;gap:6px}
+.exp-form input,.exp-form select{min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:8px 10px;font:inherit;font-size:15px;outline:none;color:var(--text)}
+.exp-form input:focus,.exp-form select:focus{border-color:var(--orange)}
+.exp-form button{grid-column:1 / -1;border:0;background:var(--orange);color:#fff;border-radius:12px;padding:8px 16px;font-weight:700;cursor:pointer}
+.exp-cats{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.exp-cats span{background:var(--green-soft);color:var(--green-ink);border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:700}
+.exp-list{margin-top:6px}
+.exp-row{padding:7px 2px;border-bottom:1px dashed var(--line)}
+.exp-row:last-child{border-bottom:0}
+.exp-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;line-height:1.35}
+.exp-row .top b{min-width:0;overflow-wrap:anywhere}
+.exp-row .amt{font-weight:900;white-space:nowrap}
+.exp-row .bot{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin-top:1px}
+.exp-row .bot span{white-space:nowrap}
+.exp-row .del{border:0;background:none;color:#c2b6a6;font-size:18px;line-height:1;cursor:pointer;padding:0 0 0 6px}
+.exp-foot{margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+#expTotal{font-size:12px;color:var(--muted)}
+.exp-foot button{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:12px;padding:6px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
 
 .foot{margin:30px 0 0;text-align:center;color:var(--muted);font-size:12px}
 </style>
@@ -380,7 +399,31 @@ button{font:inherit;color:inherit}
       </div>
     </details>
 
-    <details class="tool" open>
+    <details class="tool">
+      <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12.5h2M3 10h18"/></svg>個人記帳<svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
+      <div class="tbody">
+      <form class="exp-form" id="expForm">
+        <input id="expName" placeholder="花了什麼？" required>
+        <input id="expAmt" type="number" inputmode="numeric" min="1" step="1" placeholder="金額（日圓）" required>
+        <select id="expCat" aria-label="分類">
+          <option value="餐飲">餐飲</option>
+          <option value="交通">交通</option>
+          <option value="購物">購物</option>
+          <option value="住宿">住宿</option>
+          <option value="門票">門票</option>
+          <option value="其他">其他</option>
+        </select>
+        <input id="expDate" type="date" aria-label="日期">
+        <button>記一筆</button>
+      </form>
+      <div class="exp-cats" id="expCats"></div>
+      <div class="exp-list" id="expList"></div>
+      <div class="exp-foot"><small id="expTotal"></small><button type="button" id="expExport">匯出 CSV</button></div>
+      <div class="local">金額以日圓輸入，約台幣會跟著工具區的匯率換算。只存在這支手機上，換手機或清除瀏覽器資料前，請先匯出 CSV 備份。</div>
+      </div>
+    </details>
+
+    <details class="tool">
       <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 13h18M12 8S9.5 3 7 4.5 9 8 12 8zm0 0s2.5-5 5-3.5S15 8 12 8z"/></svg>伴手禮筆記<small id="giftCount"></small><svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
       <div class="tbody">
       <form class="gift-form" id="giftForm">
@@ -393,7 +436,7 @@ button{font:inherit;color:inherit}
       </div>
     </details>
 
-    <details class="tool" open>
+    <details class="tool">
       <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11h10.2L20 8H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg>個人購物清單<small id="shopCount"></small><svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
       <div class="tbody">
       <form class="gift-form" id="shopForm">
@@ -406,7 +449,7 @@ button{font:inherit;color:inherit}
       </div>
     </details>
 
-    <details class="tool" open>
+    <details class="tool">
       <summary><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 7V5a3 3 0 0 1 6 0v2M4 12h16"/></svg>行前準備<small id="packCount"></small><svg class="tchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></h3></summary>
       <div class="tbody">
       <div class="progress"><i id="packBar"></i></div>
@@ -606,8 +649,8 @@ const DAYS = [
     ]
   },
   {
-    date:"2026-10-16", route:["sapporo","jingu","koibito","sapporo"], short:"10/16", week:"五",
-    title:"北海道神宮・<em>白色戀人</em>・逛街", hotel:"tokyu",
+    date:"2026-10-16", route:["sapporo","koibito","jingu","sapporo"], short:"10/16", week:"五",
+    title:"<em>白色戀人</em>・北海道神宮・逛街", hotel:"tokyu",
     weather:{ name:"札幌", lat:43.0618, lon:141.3545 },
     items:[
       { type:"spot", time:"一早・退房前", name:"札幌諏訪神社", optional:"自由決定",
@@ -618,26 +661,26 @@ const DAYS = [
       { type:"hotel", time:"10:00 前", hotel:"grandir", action:"退房" },
       { type:"move", to:"先把行李寄到飯店", options:[
         { title:"計程車", rec:true, detail:"民宿到東急STAY 約 15 分鐘，先寄放行李。" } ] },
-      { type:"move", to:"往北海道神宮", options:[
-        { title:"地鐵＋走路", rec:true, detail:"大通站坐東西線（往宮の沢）3 站到「圓山公園站」約 5 分，穿過圓山公園走路約 15 分到神宮。" },
-        { title:"地鐵＋計程車", detail:"到圓山公園站後坐計程車到神宮約 5 分鐘，省腳力。" } ] },
-      { type:"spot", time:"約 10:45–12:00", name:"北海道神宮",
-        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Hokkaido_Jingu.JPG/500px-Hokkaido_Jingu.JPG",
-        intro:"北海道最重要的神社，藏在圓山公園的大樹林裡。參道又長又安靜，常有松鼠跑來跑去。境內茶屋有賣小烤餅「判官さま」。",
-        tips:["10 月開門 6:00–17:00"],
-        map:"北海道神宮" },
-      { type:"move", time:"12:00", to:"往白色戀人公園", options:[
-        { title:"地鐵", rec:true, detail:"圓山公園站坐東西線（往宮の沢）5 站到終點「宮之澤站」約 10 分，走路約 7 分鐘。" },
-        { title:"計程車", detail:"從神宮直接坐過去約 15–20 分鐘。" } ] },
-      { type:"spot", time:"約 12:30–14:30", name:"白色戀人公園",
+      { type:"move", to:"往白色戀人公園", options:[
+        { title:"地鐵", rec:true, detail:"大通站坐東西線（往宮の沢）直達終點「宮之澤站」約 15 分，走路約 7 分鐘到白色戀人。" },
+        { title:"計程車", detail:"從大通站附近坐計程車約 15–20 分鐘。" } ] },
+      { type:"spot", time:"約 10:45–12:30", name:"白色戀人公園",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Shiroi_Koibito_Park_20260703p.jpg/500px-Shiroi_Koibito_Park_20260703p.jpg",
         intro:"北海道名產「白色戀人」的餅乾工廠，像歐洲小鎮。可以看餅乾怎麼做出來，還有花園和甜點店。",
         tips:["營業 10:00–18:00・門票 ¥800"],
         map:"白い恋人パーク" },
       { type:"meal", label:"午餐", near:"白い恋人パーク" },
+      { type:"move", to:"往北海道神宮", options:[
+        { title:"地鐵＋走路", rec:true, detail:"宮之澤站坐東西線（往大通方向）5 站到「圓山公園站」約 10 分，穿過圓山公園走路約 15 分到神宮。" },
+        { title:"地鐵＋計程車", detail:"到圓山公園站後坐計程車到神宮約 5 分鐘，省腳力。" } ] },
+      { type:"spot", time:"約 14:00–15:30", name:"北海道神宮",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Hokkaido_Jingu.JPG/500px-Hokkaido_Jingu.JPG",
+        intro:"北海道最重要的神社，藏在圓山公園的大樹林裡。參道又長又安靜，常有松鼠跑來跑去。境內茶屋有賣小烤餅「判官さま」。",
+        tips:["10 月開門 6:00–17:00"],
+        map:"北海道神宮" },
       { type:"move", to:"回飯店", options:[
-        { title:"地鐵東西線", rec:true, detail:"宮之澤站直達「大通站」約 15 分，2 號出口走路約 3 分鐘。" } ] },
-      { type:"hotel", time:"15:00", hotel:"tokyu", action:"Check-in・睡個午覺" },
+        { title:"走路＋地鐵東西線", rec:true, detail:"從神宮走回「圓山公園站」約 15 分鐘（或坐計程車約 5 分鐘），再坐東西線（往大通方向）3 站到「大通站」約 5 分，2 號出口走路約 3 分鐘。" } ] },
+      { type:"hotel", time:"16:00 左右", hotel:"tokyu", action:"Check-in・休息一下" },
       { type:"spot", time:"天黑後・約 17:30 起", name:"JR塔展望室 T38（夜景）", optional:"視情況",
         photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Night_cityscape_from_JR_Tower_%28south_side%29.jpg/500px-Night_cityscape_from_JR_Tower_%28south_side%29.jpg",
         intro:"札幌車站正上方、JR 塔 38 樓的展望室，離地 160 公尺，一圈 360 度看札幌夜景，往南可以看到大通公園和電視塔。在室內看，不怕冷也不怕風。",
@@ -1015,7 +1058,7 @@ $("#fxIn").oninput = fxRender;
 $("#fxSwap").onclick = () => { fxDir = fxDir === "jpy" ? "twd" : "jpy"; $("#fxIn").value = ""; fxRender(); };
 if (!fxRate || fxRate.day !== today){
   fetch("https://open.er-api.com/v6/latest/JPY").then(r=>r.json()).then(j=>{
-    if (j && j.rates && j.rates.TWD){ fxRate = { rate:j.rates.TWD, day:today }; store.set("hk-fx", fxRate); fxRender(); }
+    if (j && j.rates && j.rates.TWD){ fxRate = { rate:j.rates.TWD, day:today }; store.set("hk-fx", fxRate); fxRender(); expRender(); }
   }).catch(()=>{});
 }
 
@@ -1129,6 +1172,53 @@ function switchTab(name, focusDay){
   if (focusDay == null) window.scrollTo(0,0);
 }
 tabs.forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+
+/* ---------- 工具頁：個人記帳 ---------- */
+const EXP_KEY = "hk2026-exp", EXP_CATS = ["餐飲","交通","購物","住宿","門票","其他"];
+const expFmt = n => Math.round(+n || 0).toLocaleString("zh-TW");
+const expRate = () => (fxRate && fxRate.rate) || FX_FALLBACK;
+const expSum = list => list.reduce((sum, x) => sum + (+x.jpy || 0), 0);
+function expRender(){
+  const list = store.get(EXP_KEY, []), total = expSum(list), r = expRate();
+  $("#expTotal").textContent = list.length ? "合計 ¥" + expFmt(total) + "（≈ NT$" + expFmt(total * r) + "）" : "";
+  $("#expCats").innerHTML = EXP_CATS.map(c => [c, expSum(list.filter(x => x.cat === c))])
+    .filter(([, v]) => v > 0).map(([c, v]) => '<span>' + esc(c) + ' ¥' + expFmt(v) + '</span>').join("");
+  $("#expList").innerHTML = list.length ? list.map((x, i) => ({ x, i })).reverse().map(({ x, i }) =>
+      '<div class="exp-row">' +
+        '<div class="top"><b>' + esc(x.name) + '</b><span class="amt">¥' + expFmt(x.jpy) + '</span></div>' +
+        '<div class="bot"><span>' + esc(x.date) + ' ・ ' + esc(x.cat) + '</span>' +
+        '<span>≈ NT$' + expFmt(x.jpy * r) + '<button class="del" data-del="' + i + '" aria-label="刪除">×</button></span></div>' +
+      '</div>').join("")
+    : '<div class="empty">還沒有記帳，花一筆就記下來吧！</div>';
+  $("#expList").querySelectorAll("[data-del]").forEach(el => el.onclick = () => {
+    if (!confirm("確定要刪除這一筆嗎？")) return;
+    const l = store.get(EXP_KEY, []); l.splice(+el.dataset.del, 1); store.set(EXP_KEY, l); expRender();
+  });
+}
+$("#expDate").value = todayStr();
+$("#expForm").onsubmit = e => {
+  e.preventDefault();
+  const name = $("#expName").value.trim(), jpy = Math.round(parseFloat($("#expAmt").value));
+  if (!name || !(jpy > 0)) return;
+  const l = store.get(EXP_KEY, []);
+  l.push({ name, jpy, cat: $("#expCat").value, date: $("#expDate").value || todayStr() });
+  store.set(EXP_KEY, l);
+  $("#expName").value = ""; $("#expAmt").value = ""; expRender();
+};
+$("#expExport").onclick = () => {
+  const list = store.get(EXP_KEY, []);
+  if (!list.length) return;
+  const q = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+  const rows = [["日期","項目","分類","日圓(JPY)","約台幣(TWD)"]]
+    .concat(list.map(x => [x.date, x.name, x.cat, x.jpy, Math.round(x.jpy * expRate())]));
+  const csv = "﻿" + rows.map(r => r.map(q).join(",")).join("\r\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url; a.download = "北海道記帳_" + todayStr() + ".csv";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+expRender();
 
 /* ---------- 啟動 ---------- */
 fxRender(); renderPack();
