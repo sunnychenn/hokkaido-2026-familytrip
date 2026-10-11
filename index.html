@@ -802,8 +802,8 @@ const today = todayStr();
 })();
 
 /* ---------- 天氣資料 ---------- */
-/* 只看白天活動時間：每天 8:00–21:00（日本時間），摘要和逐時天氣都用這段時間計算 */
-const WX_HOUR_FROM = 8, WX_HOUR_TO = 21;
+/* 只看白天活動時間：每天 7:00–22:00（日本時間），摘要和逐時天氣都用這段時間計算 */
+const WX_HOUR_FROM = 7, WX_HOUR_TO = 22;
 const wxCache = {};
 function getWeather(d){
   const w = d.weather, key = d.date + "|" + w.lat;
