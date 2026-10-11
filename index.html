@@ -260,6 +260,18 @@ button{font:inherit;color:inherit}
 .wxcard .desc{font-size:13px;color:var(--muted)}
 .wxcard .wear{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
 .wxcard .wear .h{font-size:13px;font-weight:700;margin-bottom:5px}
+/* 天氣頁：每小時天氣（預設收合，點一下展開） */
+.wxcard .hrs{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.wxcard .hrs summary{list-style:none;cursor:pointer;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.wxcard .hrs summary::-webkit-details-marker{display:none}
+.wxcard .hrs summary::after{content:"";width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.wxcard .hrs[open] summary::after{transform:rotate(-135deg) translate(-2px,0)}
+.wxcard .strip{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.wxcard .strip::-webkit-scrollbar{display:none}
+.wxcard .strip .hr{flex:0 0 46px;text-align:center;background:var(--bg);border-radius:12px;padding:6px 0;font-size:12px;color:var(--muted);line-height:1.35}
+.wxcard .strip .hr i{display:block;font-style:normal;font-size:20px;line-height:1.4}
+.wxcard .strip .hr b{display:block;font-size:14px;color:var(--text)}
+.wxcard .strip .hr .r.hi{color:var(--orange);font-weight:700}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{background:var(--green-soft);border-radius:999px;padding:2px 11px;font-size:13.5px}
 .auto{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
@@ -790,21 +802,32 @@ const today = todayStr();
 })();
 
 /* ---------- 天氣資料 ---------- */
+/* 只看白天活動時間：每天 8:00–21:00（日本時間），摘要和逐時天氣都用這段時間計算 */
+const WX_HOUR_FROM = 8, WX_HOUR_TO = 21;
 const wxCache = {};
 function getWeather(d){
   const w = d.weather, key = d.date + "|" + w.lat;
   if (!wxCache[key]){
     wxCache[key] = fetch("https://api.open-meteo.com/v1/forecast?latitude="+w.lat+"&longitude="+w.lon+
-      "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max" +
+      "&hourly=weather_code,temperature_2m,precipitation_probability,wind_speed_10m,is_day" +
       "&timezone=Asia%2FTokyo&start_date="+d.date+"&end_date="+d.date)
       .then(r => r.ok ? r.json() : null)
       .then(j => {
-        const x = j && j.daily;
-        if (!x || x.temperature_2m_max[0] == null) return null;
-        const max = x.temperature_2m_max[0], min = x.temperature_2m_min[0];
-        const rain = x.precipitation_probability_max[0] ?? 0, wind = x.wind_speed_10m_max[0] ?? 0;
-        const [icon, desc] = WX[x.weather_code[0]] || ["🌡️",""];
-        return { icon, desc, max, min, rain, wind, wear: wear(max,min,rain,wind) };
+        const x = j && j.hourly;
+        if (!x || !x.time) return null;
+        const hours = x.time.map((t, i) => ({
+          h: +t.slice(11, 13), code: x.weather_code[i], t: x.temperature_2m[i],
+          rain: x.precipitation_probability[i], wind: x.wind_speed_10m[i], day: x.is_day[i]
+        })).filter(o => o.h >= WX_HOUR_FROM && o.h <= WX_HOUR_TO && o.t != null);
+        if (!hours.length) return null;
+        const temps = hours.map(o => o.t);
+        const max = Math.max(...temps), min = Math.min(...temps);
+        const rain = Math.max(...hours.map(o => o.rain ?? 0));
+        const wind = Math.max(...hours.map(o => o.wind ?? 0));
+        const code = Math.max(...hours.map(o => o.code ?? 0));   /* 代表天氣：取這段時間裡最差的天氣 */
+        const [icon, desc] = WX[code] || ["🌡️",""];
+        hours.forEach(o => { o.icon = (!o.day && o.code <= 2) ? "🌙" : (WX[o.code] || ["🌡️"])[0]; });
+        return { icon, desc, max, min, rain, wind, hours, wear: wear(max,min,rain,wind) };
       })
       .catch(() => null);
   }
@@ -1035,8 +1058,12 @@ function renderWeather(focus){
     el.innerHTML = '<div class="row"><div class="ic">'+w.icon+'</div><div>' +
       '<div class="d"><b>'+esc(d.short)+'（'+esc(d.week)+'）</b>'+esc(d.weather.name)+'</div>' +
       '<div class="tmp">'+(w.fallback ? w.range : Math.round(w.min)+'° – '+Math.round(w.max)+'°C')+'</div>' +
-      '<div class="desc">'+(w.fallback ? "往年這時候・"+w.desc : esc(w.desc)+'・降雨機率 '+w.rain+'%')+'</div></div></div>' +
-      '<div class="wear"><div class="h">這天這樣穿</div><div class="chips">'+w.wear.map(s=>'<span class="chip">'+esc(s)+'</span>').join("")+'</div></div>';
+      '<div class="desc">'+(w.fallback ? "往年這時候・"+w.desc : esc(w.desc)+'・降雨機率 '+w.rain+'%・白天 '+WX_HOUR_FROM+'–'+WX_HOUR_TO+' 時')+'</div></div></div>' +
+      '<div class="wear"><div class="h">這天這樣穿</div><div class="chips">'+w.wear.map(s=>'<span class="chip">'+esc(s)+'</span>').join("")+'</div></div>' +
+      (w.hours ? '<details class="hrs"><summary>每小時天氣（'+WX_HOUR_FROM+':00–'+WX_HOUR_TO+':00）</summary><div class="strip">' +
+        w.hours.map(o=>'<div class="hr"><span>'+String(o.h).padStart(2,"0")+'</span><i>'+o.icon+'</i><b>'+Math.round(o.t)+'°</b>' +
+          '<span class="r'+((o.rain ?? 0) >= 50 ? ' hi' : '')+'">'+(o.rain ?? 0)+'%</span></div>').join("") +
+        '</div></details>' : '');
   }));
   if (focus != null) setTimeout(()=>{ const el = $("#wx"+focus); if (el) el.scrollIntoView({block:"center"}); }, 60);
 }
