@@ -498,7 +498,7 @@ button{font:inherit;color:inherit}
 
 const FLIGHTS = {
   go:   { code:"JX850", date:"10/12（一）", from:"TPE", fromName:"桃園 第一航廈", to:"CTS", toName:"新千歲 國際線",
-          dep:"10:05", arr:"15:10", dur:"4 小時 5 分", cls:"經濟艙" },
+          dep:"10:05", arr:"15:10", dur:"4 小時 5 分", cls:"豪經艙" },
   back: { code:"JX851", date:"10/17（六）", from:"CTS", fromName:"新千歲 國際線", to:"TPE", toName:"桃園 第一航廈",
           dep:"16:25", arr:"19:35", dur:"4 小時 10 分", cls:"經濟艙" }
 };
@@ -603,7 +603,12 @@ const DAYS = [
     title:"<em>小樽</em>慢慢逛＋換住宿", hotel:"grandir",
     weather:{ name:"小樽", lat:43.197, lon:140.994 },
     items:[
-      { type:"hotel", time:"約 9:00", hotel:"jal", action:"退房，行李寄放櫃台" },
+      { type:"spot", time:"7:00–8:30", name:"中島公園散步・野餐早餐",
+        photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Nakajima_Park_Sapporo03bs5s4272.jpg/500px-Nakajima_Park_Sapporo03bs5s4272.jpg",
+        intro:"一早到飯店旁的中島公園散步，找張長椅或草地野餐吃早餐，看池塘和秋天轉色的樹，慢慢開始這一天。",
+        map:"中島公園 札幌" },
+      { type:"hotel", time:"8:30", hotel:"jal", action:"回飯店休息、整理行李" },
+      { type:"hotel", time:"11:00", hotel:"jal", action:"退房，行李寄放櫃台" },
       { type:"move", to:"往小樽", options:[
         { title:"地鐵＋JR", rec:true, detail:"中島公園站往麻生方向坐 3 站到「札幌站」，換 JR 到「小樽站」約 35–45 分。坐右邊靠窗，有機會看到海。" } ] },
       { type:"note", text:"今天整天在小樽慢慢逛，不趕時間。逛累了就找間咖啡店坐坐，晚餐也可以在小樽吃完再回札幌。" },
